@@ -1,0 +1,7 @@
+﻿0. Instalar y configurar syslog
+1. Instalación paper trail
+	En cada equipo, ir a /etc/rsyslog.conf y agregar la esta línea al final:
+	*.*    @logs5.papertrailapp.com:28082
+	
+2. Reiniciar el servicio de Syslog
+	sudo service rsyslog restart
