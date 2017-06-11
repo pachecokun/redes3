@@ -8,6 +8,11 @@ package com.mx.classes;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import org.snmp4j.CommandResponder;
 import org.snmp4j.CommandResponderEvent;
@@ -28,7 +33,6 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TcpAddress;
 import org.snmp4j.smi.TransportIpAddress;
 import org.snmp4j.smi.UdpAddress;
-import org.snmp4j.smi.Variable;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.tools.console.SnmpRequest;
 import org.snmp4j.transport.AbstractTransportMapping;
@@ -158,6 +162,41 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         log.setText(sb.toString());
     }
 
+    private boolean sendEmail(String receiver, String text) {
+        try {
+            final String username = "service.desk.failures@gmail.com";
+            final String password = "servicedeskfailures";
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                @Override
+                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                    return new javax.mail.PasswordAuthentication(username, password);
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(receiver));
+            message.setSubject("Critical trap receiver");
+            message.setText(text);
+
+            javax.mail.Transport.send(message);
+
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+
+    }
+
     private void showVarBinds(List<VariableBinding> varBinds) {
         int i = 0;
         String oid;
@@ -169,7 +208,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
                 if (oid.startsWith("1.")) {
                     if (isCritical(oid)) {
                         isCritical = true;
-                        sb.append(mibMap.get(oid)[0]).append("\nDetails:");
+                        sb.append(mibMap.get(oid)[0]).append("\nDetails:\n");
                     } else {
                         addLog("------------Trap detected------------------------");
                         addLog(mibMap.get(oid)[0] + "\nDetails:");
@@ -177,6 +216,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
                 } else {
                     if (isCritical) {
                         sb.append("\t").append(mibMap.get(varBind.getOid().toDottedString())[0]).append("=").append(varBind.toValueString()).append("\n");
+
                     } else {
                         addLog("\t" + mibMap.get(varBind.getOid().toDottedString())[0] + "=" + varBind.toValueString());
                     }
@@ -186,6 +226,12 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         }
         if (isCritical) {
             JOptionPane.showMessageDialog(rootPane, sb.toString(), "Critical trap detected", JOptionPane.ERROR_MESSAGE);
+            if (sendEmail("c42trujillo@yahoo.com.mx", sb.toString())) {
+                JOptionPane.showMessageDialog(rootPane, "Email sent to the service desk to its properly management", "Sent email", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Email sent to the service desk", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         }
     }
 
@@ -215,9 +261,9 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(180, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
                 .addGap(23, 23, 23))
         );
 
