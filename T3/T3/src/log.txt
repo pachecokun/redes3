@@ -1,0 +1,1 @@
+[2017-06-12] - [timeQuality tzKnown="1" isSynced="1" syncAccuracy="124000"] lel
