@@ -3,7 +3,6 @@
 ftp -n $1 <<SCRIPT
 user rcp rcp
 binary
-lcd /home/ftp/
 get startup-config "$1".conf
 quit
 SCRIPT
