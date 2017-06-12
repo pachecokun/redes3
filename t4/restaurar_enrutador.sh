@@ -7,7 +7,6 @@ ftp -n $HOST <<SCRIPT
 quote user $USER
 quote pass $PASSWD
 binary
-lcd /home/ftp
 put $HOST.conf $FILE
 quit
 SCRIPT
