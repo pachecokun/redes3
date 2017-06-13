@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/saul/Desktop/ASR/redes3/T3/T3/src/com/mx/gui/Login.java</file>
+            <file>file:/home/saul/Desktop/ASR/redes3/T3/T3/src/com/mx/classes/Authorization_Level.java</file>
+            <file>file:/home/saul/Desktop/ASR/redes3/T3/T3/src/com/mx/gui/Trap_manager.java</file>
+            <file>file:/home/saul/Desktop/ASR/redes3/T3/T3/src/com/mx/classes/User.java</file>
+        </group>
     </open-files>
 </project-private>

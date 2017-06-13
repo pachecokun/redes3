@@ -55,7 +55,7 @@ import org.snmp4j.util.ThreadPool;
  * @author root
  */
 public class Trap_manager extends javax.swing.JFrame implements CommandResponder {
-    
+
     List<VariableBinding> varBinds;
     String logPath = "./src/log.txt";
     HashMap<String, String[]> mibMap = new HashMap<>();
@@ -66,7 +66,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         {"1.3.6.1.2.1.2.2.1.2.3", "ifDescr", "0"},
         {"1.3.6.1.2.1.2.2.1.7.3", "ifAdminStatus", "0"},
         {"1.3.6.1.2.1.2.2.1.8.3", "ifOperStatus", "0"},};
-    
+
     public Trap_manager() throws IOException {
         initComponents();
         setLocationRelativeTo(null);
@@ -85,7 +85,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         } else {
             transport = new DefaultUdpTransportMapping((UdpAddress) address);
         }
-        
+
         ThreadPool threadPool = ThreadPool.create("DispatcherPool", 10);
         MessageDispatcher mtDispatcher = new MultiThreadedMessageDispatcher(threadPool, new MessageDispatcherImpl());
 
@@ -101,20 +101,20 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         //Create Target
         CommunityTarget target = new CommunityTarget();
         target.setCommunity(new OctetString("public"));
-        
+
         Snmp snmp = new Snmp(mtDispatcher, transport);
         snmp.addCommandResponder(this);
-        
+
         transport.listen();
         addLog("Started listening traps", logTraps);
-        
+
         try {
             this.wait();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
     }
-    
+
     @Override
     public synchronized void processPdu(CommandResponderEvent cmdRespEvent) {
         PDU pdu = cmdRespEvent.getPDU();
@@ -141,7 +141,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
             }
         }
     }
-    
+
     private void loadMibs() {
         for (String[] s : mibs) {
             mibMap.put(s[0], new String[]{s[1], s[2]});
@@ -167,7 +167,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         });
         t.start();
     }
-    
+
     private void startDaemonTraps() {
         Thread t = new Thread(new Runnable() {
             @Override
@@ -181,7 +181,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         });
         t.start();
     }
-    
+
     private void addLog(String s, JEditorPane log) {
         StringBuilder sb = new StringBuilder();
         sb.append(log.getText());
@@ -192,7 +192,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         log.setText(sb.toString());
         log.setCaretPosition(log.getDocument().getLength());
     }
-    
+
     private void sendEmail(String receiver, String text) {
         Thread t = new Thread(new Runnable() {
             @Override
@@ -200,13 +200,13 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
                 try {
                     final String username = "service.desk.failures@gmail.com";
                     final String password = "servicedeskfailures";
-                    
+
                     Properties props = new Properties();
                     props.put("mail.smtp.auth", "true");
                     props.put("mail.smtp.starttls.enable", "true");
                     props.put("mail.smtp.host", "smtp.gmail.com");
                     props.put("mail.smtp.port", "587");
-                    
+
                     Session session = Session.getInstance(props,
                             new javax.mail.Authenticator() {
                         @Override
@@ -214,14 +214,14 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
                             return new javax.mail.PasswordAuthentication(username, password);
                         }
                     });
-                    
+
                     Message message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(username));
                     message.setRecipients(Message.RecipientType.TO,
                             InternetAddress.parse(receiver));
                     message.setSubject("Critical trap receiver");
                     message.setText(text);
-                    
+
                     javax.mail.Transport.send(message);
                 } catch (Exception ex) {
                     System.out.println(ex.toString());
@@ -230,7 +230,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
         });
         t.start();
     }
-    
+
     private void showVarBinds(List<VariableBinding> varBinds) {
         int i = 0;
         String oid;
@@ -249,7 +249,7 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
                 } else {
                     if (isCritical) {
                         sb.append("\t").append(mibMap.get(varBind.getOid().toDottedString())[0]).append("=").append(varBind.toValueString()).append("\n");
-                        
+
                     }
                     addLog("\t" + mibMap.get(varBind.getOid().toDottedString())[0] + "=" + varBind.toValueString(), logTraps);
                 }
@@ -262,11 +262,11 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
             JOptionPane.showMessageDialog(rootPane, "Email sent to the service desk to its properly management", "Sent email", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     private boolean isCritical(String oid) {
         return mibMap.get(oid)[1].equals("1");
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -387,42 +387,6 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
             JOptionPane.showMessageDialog(rootPane, "Error opening file:\n" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnOpenFileActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                javax.swing.UIManager.setLookAndFeel(info.getClassName());
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Trap_manager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Trap_manager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Trap_manager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Trap_manager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new Trap_manager().setVisible(true);
-                } catch (IOException e) {
-                    System.out.println(e.toString());
-                }
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOpenFile;
