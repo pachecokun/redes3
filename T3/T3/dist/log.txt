@@ -1,0 +1,3 @@
+[2017-06-14] - [timeQuality tzKnown="1" isSynced="1" syncAccuracy="500"] asdf
+[2017-06-14] - [timeQuality tzKnown="1" isSynced="1" syncAccuracy="47500"] asdf
+[2017-06-14] - [timeQuality tzKnown="1" isSynced="1" syncAccuracy="97500"] Error message
