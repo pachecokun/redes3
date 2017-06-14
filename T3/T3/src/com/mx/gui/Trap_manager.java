@@ -57,7 +57,7 @@ import org.snmp4j.util.ThreadPool;
 public class Trap_manager extends javax.swing.JFrame implements CommandResponder {
 
     List<VariableBinding> varBinds;
-    String logPath = "./src/log.txt";
+    String logPath = "log.txt";
     HashMap<String, String[]> mibMap = new HashMap<>();
     String[][] mibs = new String[][]{
         {"1.3.6.1.6.3.1.1.5.4", "linkUp", "0"},
@@ -387,6 +387,10 @@ public class Trap_manager extends javax.swing.JFrame implements CommandResponder
             JOptionPane.showMessageDialog(rootPane, "Error opening file:\n" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnOpenFileActionPerformed
+
+    public static void main(String[] args) throws IOException {
+        new Trap_manager().setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOpenFile;
