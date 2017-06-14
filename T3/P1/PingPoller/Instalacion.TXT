@@ -1,0 +1,2 @@
+1. Poner carpeta en monitor
+2. Ejecutar usando "java -jar PingPoller.jar"
