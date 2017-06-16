@@ -24,7 +24,7 @@ def sendEmail():
 	msg = email.mime.Multipart.MIMEMultipart()
 	msg['Subject'] = 'Reporte de Rendimiento'
 	msg['From'] = 'Servidor <' + MAIL_SENDER + '>'
-	msg['To'] = 'Usuario <'+ MAIL_RECEIVER +'>'
+	msg['To'] = 'Usuario <'+ MAIL_RECEIVER[0] +'>'
 
 	body = email.mime.Text.MIMEText("""Reporte de rendimiento de red.""")
 	msg.attach(body)

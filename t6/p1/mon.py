@@ -3,7 +3,7 @@ import time
 import pprint
 from gui import *
 import threading
- 
+
 nodes = []
 interval = 0.1
 pp = pprint.PrettyPrinter(indent=4)
@@ -12,7 +12,7 @@ gui = GUI()
 
 def initUI():
 	gui.init()
-	
+
 t = threading.Thread(target=initUI)
 t.start()
 time.sleep(1)
@@ -41,10 +41,16 @@ def monitor():
 		names = snmpwalk(node,'interfaces.ifTable.ifEntry.ifDescr')
 		rx = snmpwalk(node,'interfaces.ifTable.ifEntry.ifInOctets')
 		tx = snmpwalk(node,'interfaces.ifTable.ifEntry.ifOutOctets')
-		
+
 		for i in range(len(names)):
 			if len(data[node])< i+1:
-				data[node].append({'name':names[i],'bwr':[],'bwt':[],'file':open('bw/'+node+'_'+str(i)+'_'+names[i]+'.txt','w')})
+				data[node].append({
+					'name':names[i],
+					'bwr':[],
+					'bwt':[],
+					'file':open('bw/'+node+'_'+str(i)+'.txt','w')
+				})
+				data[node][i]['file'].write(names[i]+'\n')
 			else:
 				bwr = (int(rx[i])-data[node][i]['rx'])/interval
 				bwt = (int(tx[i])-data[node][i]['tx'])/interval
@@ -54,8 +60,8 @@ def monitor():
 				if len(data[node][i]['bwr'])>10:
 					data[node][i]['bwr'] = data[node][i]['bwr'][-10:]
 					data[node][i]['bwt'] = data[node][i]['bwt'][-10:]
-					
-				
+
+
 			data[node][i]['rx'] = int(rx[i])
 			data[node][i]['tx'] = int(tx[i])
 	gui.update(data)
