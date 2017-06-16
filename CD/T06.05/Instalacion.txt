@@ -1,0 +1,4 @@
+﻿1. Guardar Gráficas de cacti en figures
+2. Modificar datos de correo y nombre del documento en el archivo reporte.py
+3. Ejecutar reporte.py
+4. Listo!
