@@ -1,1 +1,0 @@
-parallel-ssh -O StrictHostKeyChecking=no -h ips.list -o hwconfig -A -l root lshw -html
